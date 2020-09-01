@@ -1,6 +1,5 @@
 import Todo, { ITodo } from '../schemas/SchemaTodo'
 
-const { ObjectId } = require('mongodb')
 const uuid = require('uuid-base62')
 
 export default class TodoService {
@@ -30,7 +29,7 @@ export default class TodoService {
   }
 
   async updateTodo (todoId: string, todo: ITodo ) {
-    const todoUpdated = await Todo.updateOne({ _id: ObjectId(todoId) }, { $set: todo })
+    const todoUpdated = await Todo.updateOne({ id: todoId }, { $set: todo })
     return todoUpdated
   }
 
@@ -40,7 +39,7 @@ export default class TodoService {
   }
 
   async deleteTodo (todoId: string) {
-    const deletedTodo = await Todo.deleteOne({ _id: ObjectId(todoId) })
+    const deletedTodo = await Todo.deleteOne({ id: todoId })
     return deletedTodo
   }
 }

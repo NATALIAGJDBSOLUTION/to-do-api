@@ -7,7 +7,7 @@ export interface IArrUser {
 export interface ITodo extends Document {
   id: string
   name: string | null
-  arrUser: IArrUser[]
+  users: IArrUser[]
 }
 
 const TodoSchema: Schema = new Schema({
@@ -20,7 +20,13 @@ const TodoSchema: Schema = new Schema({
     type: String,
     default: null
   },
-  arrUser: [{
+  status: {
+    type: String,
+    enum: ['ABIERTA', 'EN-PROGRESO', 'COMPLETADA', 'ARCHIVADA'],
+    default: 'ABIERTA',
+    required: true
+  },
+  users: [{
     name: String
   }]
 }, {

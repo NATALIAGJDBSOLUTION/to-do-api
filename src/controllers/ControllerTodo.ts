@@ -72,11 +72,18 @@ export async function addManyTodos (req: Request, res: Response, next: NextFunct
 export async function editTodo (req: Request, res: Response, next: NextFunction) {
   try {
     const { body, params } = req
-
-    const todo = await todoService.updateTodo(params.id, body)
+    const todo = await todoService.detailTodo(params.id)
+    let updateTodo = {}
+    if(todo) {
+      updateTodo = await todoService.updateTodo(params.id, body)
+    } else {
+      res.status(400).json({
+        message: 'Todo not found'
+      })
+    }
 
     res.status(201).json({
-      todo
+      updateTodo
     })
 
   } catch (error) {

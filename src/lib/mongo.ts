@@ -42,7 +42,10 @@ export class MongoDb implements IMongoDBConfig {
 
     logger.info(chalk.yellow(`MONGO: ${MONGO_URI}\n`))
 
-    mongoose.connect(MONGO_URI, options)
+    mongoose.connect(MONGO_URI, options).catch((err: any) => {
+      console.log('error conectandose en mongo ', err);
+      
+    })
 
     mongoose.connection.on('error', () => {
       logger.error(chalk.red('MONGODB [ERROR]\n'))
