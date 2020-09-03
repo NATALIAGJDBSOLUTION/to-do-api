@@ -34,8 +34,8 @@ export default class TodoService {
   }
 
   async detailTodo (todoId: string) {
-    const todo = await Todo.find({ id: todoId })
-    return todo || []
+    const todo = await Todo.findOne({ id: todoId }).lean()
+    return todo
   }
 
   async deleteTodo (todoId: string) {

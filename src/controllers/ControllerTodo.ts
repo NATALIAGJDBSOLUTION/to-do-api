@@ -73,9 +73,14 @@ export async function editTodo (req: Request, res: Response, next: NextFunction)
   try {
     const { body, params } = req
     const todo = await todoService.detailTodo(params.id)
-    let updateTodo = {}
+
     if(todo) {
-      updateTodo = await todoService.updateTodo(params.id, body)
+      if(body.users)
+        todo.users.forEach(element => {
+          body.users.push(element)
+        });
+
+      await todoService.updateTodo(params.id, body)
     } else {
       res.status(400).json({
         message: 'Todo not found'
@@ -83,7 +88,7 @@ export async function editTodo (req: Request, res: Response, next: NextFunction)
     }
 
     res.status(201).json({
-      updateTodo
+      message: 'To do list updated'
     })
 
   } catch (error) {
@@ -100,7 +105,6 @@ export async function editTodo (req: Request, res: Response, next: NextFunction)
 export async function getTodo (req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-
     const todo = await todoService.detailTodo(id)
 
     if (todo) {
@@ -126,8 +130,30 @@ export async function getTodo (req: Request, res: Response, next: NextFunction) 
 export async function deleteTodo (req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
+    const { body, params } = req
 
-    await todoService.deleteTodo(id)
+    const todo = await todoService.detailTodo(id) as ITodo
+
+    const nuevoArr: string | any[] = []
+    if(todo) {
+      if(body.users) {
+        for (const iterator of todo.users) {
+          for (const element of body.users) {
+            if (iterator._id != element._id) {
+              nuevoArr.push(iterator)
+            }
+          }
+        }
+      }
+
+      todo.users = nuevoArr
+      await todoService.updateTodo(params.id, todo)
+
+    } else {
+      res.status(400).json({
+        message: 'Todo not found'
+      })
+    }
 
     res.status(201).json({
       message: 'Todo has been deleted'
